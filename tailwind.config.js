@@ -13,7 +13,10 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['"Room Bold"', 'sans-serif'],            },
+                sans: ["Room Bold", 'sans-serif'],            },
+                backgroundImage: theme => ({
+                    'gradient-custom': 'linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(118, 115, 115, 0.95) 49.5%, rgba(0, 0, 0, 0.95) 100%)',
+                  }),
         },
     },
 
