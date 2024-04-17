@@ -7,7 +7,15 @@ const EjemploFetch = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/api/users');
+                // Include the necessary headers
+                const headers = {
+                    'Accept': 'application/json',
+                    'Referer': "http://localhost:8000"
+                };
+
+                const response = await fetch('/api/users', {
+                    headers: headers
+                });
                 const jsonData = await response.json();
                 setData(jsonData);
                 setLoading(false);
