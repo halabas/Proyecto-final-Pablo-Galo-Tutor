@@ -9,4 +9,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/users', function (Request $request) {
+    return User::all();
+})->middleware('auth:sanctum');
 
