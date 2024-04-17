@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\ProfileController;
@@ -26,10 +27,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('songs', SongController::class)
-    ->only(['index','store','update','destroy'])
+    ->only(['index','store','update','destroy','create'])
     ->middleware(['auth']);
 
 Route::resource('albums', SongController::class)
     ->only(['index','store','update','destroy'])
     ->middleware(['auth']);
 require __DIR__.'/auth.php';
+
+
+

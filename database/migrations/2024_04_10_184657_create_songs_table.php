@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->decimal('duration');
+            $table->string('url');
             $table->timestamps();
         });
     }

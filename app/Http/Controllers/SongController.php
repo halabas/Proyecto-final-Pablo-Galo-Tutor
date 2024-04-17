@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Song;
-use App\Http\Requests\StoreSongRequest;
-use App\Http\Requests\UpdateSongRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class SongController extends Controller
 {
@@ -21,16 +24,32 @@ class SongController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Song/create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSongRequest $request)
+    public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        $hashedFileName = md5($request->title . $user->name) . '.' . $request->file('file')->getClientOriginalExtension();
+        $fileStoredPath = $request->file('file')->storeAs('songs', $hashedFileName);
+        $url = Storage::url('songs/' . $hashedFileName);
+
+        $song = new Song();
+        $song->title = $request->title;
+        $song->duration = $request->duration;
+        $song->url = $url;
+        $song->save();
+
+        $user->songs()->attach($song->id, ['owner' => true]);
+
+        return Redirect::back();
     }
+
+
+
 
     /**
      * Display the specified resource.
@@ -51,7 +70,7 @@ class SongController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSongRequest $request, Song $song)
+    public function update(Request $request, Song $song)
     {
         //
     }
