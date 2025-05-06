@@ -45,4 +45,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function playlists()
+    {
+        return $this->hasMany(Playlist::class);
+    }
+
+    public function songs()
+    {
+        return $this->belongsToMany(Song::class, 'song_user')->withPivot('role');
+    }
+
+    public function albums()
+    {
+        return $this->hasMany(Album::class);
+    }
 }
