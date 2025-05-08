@@ -3,63 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\Models\Song;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 
 class SongController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $songs = Song::all();
+        return Inertia::render('Songs/Index', [
+            'songs' => $songs
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return Inertia::render('Songs/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'duration' => 'required|integer',
+            'file' => 'required|mimes:mp3,wav,ogg|max:10240', // 10 MB
+        ]);
+
+        $file = $request->file('file');
+        $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
+        $filePath = $file->storeAs('songs', $fileName, 'public');
+
+        Song::create([
+            'title' => $request->title,
+            'duration' => $request->duration,
+            'file_path' => $filePath,
+        ]);
+
+        return redirect()->route('songs.index')->with('success', 'Canción subida correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Song $song)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Song $song)
     {
-        //
+        return Inertia::render('Songs/Edit', [
+            'song' => $song
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Song $song)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'duration' => 'required|integer',
+            'file_path' => 'required|string|max:255',
+        ]);
+
+        $song->update($request->all());
+
+        return redirect()->route('songs.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Song $song)
     {
-        //
+
+        $song->delete();
+
+        return redirect()->route('songs.index');
     }
 }
